@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CupIT - Coffee Shop Analytics Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #667eea;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card .subtext {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .card.revenue { border-left: 5px solid #667eea; }
+        .card.profit { border-left: 5px solid #2ecc71; }
+        .card.transactions { border-left: 5px solid #f39c12; }
+        .card.units { border-left: 5px solid #e74c3c; }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #667eea;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .rank {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .rank.gold { background: #f39c12; }
+        .rank.silver { background: #bdc3c7; }
+        .rank.bronze { background: #cd7f32; }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .refresh-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .profit-bar {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .profit-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .card .value {
+                font-size: 2em;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☕ CupIT Analytics Dashboard</h1>
+            <p>Real-time coffee shop performance insights</p>
+        </header>
+
+        <div id="error-container"></div>
+
+        <div id="loading" class="loading">
+            Loading analytics data...
+        </div>
+
+        <div id="dashboard-content" style="display: none;">
+            <!-- Key Metrics -->
+            <div class="dashboard-grid">
+                <div class="card revenue">
+                    <h3>Total Revenue</h3>
+                    <div class="value" id="revenue">₽0</div>
+                    <div class="subtext">All-time sales</div>
+                </div>
+                <div class="card profit">
+                    <h3>Total Profit</h3>
+                    <div class="value" id="profit">₽0</div>
+                    <div class="subtext">Net earnings</div>
+                </div>
+                <div class="card transactions">
+                    <h3>Transactions</h3>
+                    <div class="value" id="transactions">0</div>
+                    <div class="subtext">Total orders</div>
+                </div>
+                <div class="card units">
+                    <h3>Units Sold</h3>
+                    <div class="value" id="units">0</div>
+                    <div class="subtext">Products sold</div>
+                </div>
+            </div>
+
+            <!-- Best Selling Products -->
+            <div class="section">
+                <h2>🏆 Best Selling Products</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Units Sold</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="best-selling-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Most Profitable Products -->
+            <div class="section">
+                <h2>💰 Most Profitable Products</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Product</th>
+                            <th>Profit Margin</th>
+                            <th>Profit/Unit</th>
+                            <th>Total Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="most-profitable-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Daily Sales -->
+            <div class="section">
+                <h2>📊 Daily Sales Overview</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Revenue</th>
+                            <th>Profit</th>
+                            <th>Transactions</th>
+                            <th>Units Sold</th>
+                        </tr>
+                    </thead>
+                    <tbody id="daily-sales-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="refresh-btn" onclick="loadDashboard()">🔄 Refresh Data</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+
+        async function loadDashboard() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('dashboard-content').style.display = 'none';
+                document.getElementById('error-container').innerHTML = '';
+
+                // Load dashboard metrics
+                const dashboardResponse = await fetch(`${API_BASE}/dashboard`);
+                if (!dashboardResponse.ok) throw new Error('Failed to load dashboard');
+                const dashboard = await dashboardResponse.json();
+
+                // Update key metrics
+                document.getElementById('revenue').textContent = formatCurrency(dashboard.revenue);
+                document.getElementById('profit').textContent = formatCurrency(dashboard.profit);
+                document.getElementById('transactions').textContent = dashboard.transactions.toLocaleString();
+                document.getElementById('units').textContent = dashboard.units_sold.toLocaleString();
+
+                // Load best selling products
+                const bestSellingResponse = await fetch(`${API_BASE}/products/best-selling`);
+                if (!bestSellingResponse.ok) throw new Error('Failed to load best selling');
+                const bestSelling = await bestSellingResponse.json();
+                updateBestSellingTable(bestSelling);
+
+                // Load most profitable products
+                const mostProfitableResponse = await fetch(`${API_BASE}/products/most-profitable`);
+                if (!mostProfitableResponse.ok) throw new Error('Failed to load most profitable');
+                const mostProfitable = await mostProfitableResponse.json();
+                updateMostProfitableTable(mostProfitable);
+
+                // Load daily sales
+                const dailySalesResponse = await fetch(`${API_BASE}/sales/daily`);
+                if (!dailySalesResponse.ok) throw new Error('Failed to load daily sales');
+                const dailySales = await dailySalesResponse.json();
+                updateDailySalesTable(dailySales);
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-container').innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function updateBestSellingTable(products) {
+            const tbody = document.getElementById('best-selling-body');
+            tbody.innerHTML = products.slice(0, 10).map((product, index) => `
+                <tr>
+                    <td><span class="rank ${index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : ''}">${index + 1}</span></td>
+                    <td>${product.name}</td>
+                    <td>${product.category}</td>
+                    <td>${product.units_sold.toLocaleString()}</td>
+                    <td>${formatCurrency(product.revenue)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateMostProfitableTable(products) {
+            const tbody = document.getElementById('most-profitable-body');
+            const maxProfit = Math.max(...products.map(p => p.total_profit));
+            tbody.innerHTML = products.slice(0, 10).map((product, index) => `
+                <tr>
+                    <td><span class="rank ${index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : ''}">${index + 1}</span></td>
+                    <td>${product.name}</td>
+                    <td>${product.profit_margin.toFixed(1)}%</td>
+                    <td>${formatCurrency(product.profit_per_unit)}</td>
+                    <td>
+                        ${formatCurrency(product.total_profit)}
+                        <div class="profit-bar">
+                            <div class="profit-fill" style="width: ${(product.total_profit / maxProfit) * 100}%"></div>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateDailySalesTable(dailySales) {
+            const tbody = document.getElementById('daily-sales-body');
+            tbody.innerHTML = dailySales.slice(0, 14).map(day => `
+                <tr>
+                    <td>${formatDate(day.date)}</td>
+                    <td>${formatCurrency(day.revenue)}</td>
+                    <td>${formatCurrency(day.profit)}</td>
+                    <td>${day.transactions.toLocaleString()}</td>
+                    <td>${day.units_sold.toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function formatCurrency(value) {
+            return `₽${value.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        // Load dashboard on page load
+        loadDashboard();
+    </script>
+</body>
+</html>

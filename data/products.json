@@ -1,0 +1,17 @@
+[
+    {"id": 1, "name": "Cappuccino", "category": "Coffee", "purchase_price": 70.0, "selling_price": 250.0},
+    {"id": 2, "name": "Latte", "category": "Coffee", "purchase_price": 75.0, "selling_price": 270.0},
+    {"id": 3, "name": "Americano", "category": "Coffee", "purchase_price": 50.0, "selling_price": 180.0},
+    {"id": 4, "name": "Espresso", "category": "Coffee", "purchase_price": 45.0, "selling_price": 150.0},
+    {"id": 5, "name": "Flat White", "category": "Coffee", "purchase_price": 70.0, "selling_price": 260.0},
+    {"id": 6, "name": "Mocha", "category": "Coffee", "purchase_price": 80.0, "selling_price": 290.0},
+    {"id": 7, "name": "Croissant", "category": "Pastry", "purchase_price": 60.0, "selling_price": 150.0},
+    {"id": 8, "name": "Muffin", "category": "Pastry", "purchase_price": 55.0, "selling_price": 140.0},
+    {"id": 9, "name": "Cheesecake", "category": "Dessert", "purchase_price": 120.0, "selling_price": 350.0},
+    {"id": 10, "name": "Chocolate Cake", "category": "Dessert", "purchase_price": 130.0, "selling_price": 380.0},
+    {"id": 11, "name": "Green Tea", "category": "Tea", "purchase_price": 30.0, "selling_price": 120.0},
+    {"id": 12, "name": "Black Tea", "category": "Tea", "purchase_price": 25.0, "selling_price": 100.0},
+    {"id": 13, "name": "Iced Coffee", "category": "Coffee", "purchase_price": 65.0, "selling_price": 240.0},
+    {"id": 14, "name": "Hot Chocolate", "category": "Chocolate", "purchase_price": 55.0, "selling_price": 200.0},
+    {"id": 15, "name": "Cookie", "category": "Pastry", "purchase_price": 35.0, "selling_price": 90.0}
+]
