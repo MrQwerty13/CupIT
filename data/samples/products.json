@@ -1,0 +1,82 @@
+[
+  {
+    "id": "espresso",
+    "name": "Эспрессо",
+    "category": "Кофе",
+    "current_price": 190,
+    "current_cost": 42,
+    "active": true
+  },
+  {
+    "id": "americano",
+    "name": "Американо",
+    "category": "Кофе",
+    "current_price": 220,
+    "current_cost": 48,
+    "active": true
+  },
+  {
+    "id": "cappuccino",
+    "name": "Капучино",
+    "category": "Кофе с молоком",
+    "current_price": 310,
+    "current_cost": 92,
+    "active": true
+  },
+  {
+    "id": "flat-white",
+    "name": "Флэт уайт",
+    "category": "Кофе с молоком",
+    "current_price": 350,
+    "current_cost": 116,
+    "active": true
+  },
+  {
+    "id": "latte",
+    "name": "Латте",
+    "category": "Кофе с молоком",
+    "current_price": 340,
+    "current_cost": 108,
+    "active": true
+  },
+  {
+    "id": "filter",
+    "name": "Фильтр-кофе",
+    "category": "Альтернатива",
+    "current_price": 250,
+    "current_cost": 63,
+    "active": true
+  },
+  {
+    "id": "croissant",
+    "name": "Круассан",
+    "category": "Выпечка",
+    "current_price": 260,
+    "current_cost": 124,
+    "active": true
+  },
+  {
+    "id": "syrniki",
+    "name": "Сырники",
+    "category": "Завтраки",
+    "current_price": 480,
+    "current_cost": 205,
+    "active": true
+  },
+  {
+    "id": "sandwich",
+    "name": "Сэндвич с индейкой",
+    "category": "Еда",
+    "current_price": 430,
+    "current_cost": 218,
+    "active": true
+  },
+  {
+    "id": "cookie",
+    "name": "Печенье шоколадное",
+    "category": "Десерты",
+    "current_price": 180,
+    "current_cost": 72,
+    "active": true
+  }
+]

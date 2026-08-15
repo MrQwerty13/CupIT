@@ -1,0 +1,15 @@
+.DS_Store
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+web/node_modules/
+web/.vinext/
+web/.wrangler/
+web/dist/
+data/.staging/
+data/imports/
+data/ACTIVE_DATASET
